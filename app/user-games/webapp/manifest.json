@@ -1,0 +1,184 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "sig.cap.foosball.app.usergames",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:lrop",
+      "version": "1.13.1",
+      "toolsId": "d2e7d5be-778e-4aae-b682-83296a7a0b0f"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/user/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "UserGames-display": {
+          "semanticObject": "UserGames",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "icon": "sap-icon://appointment",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          },
+          "indicatorDataSource": {
+            "dataSource": "mainService",
+            "path": "Games/$count",
+            "refresh": 5
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.128.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sig.cap.foosball.app.usergames.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [
+        {
+          "pattern": ":?query:",
+          "name": "GamesList",
+          "target": "GamesList"
+        },
+        {
+          "pattern": "Games({key}):?query:",
+          "name": "GamesObjectPage",
+          "target": "GamesObjectPage"
+        }
+      ],
+      "targets": {
+        "GamesList": {
+          "type": "Component",
+          "id": "GamesList",
+          "name": "sap.fe.templates.ListReport",
+          "options": {
+            "settings": {
+              "contextPath": "/Games",
+              "variantManagement": "Page",
+              "navigation": {
+                "Games": {
+                  "detail": {
+                    "route": "GamesObjectPage"
+                  }
+                }
+              },
+              "initialLoad": "Enabled",
+              "views": {
+                "paths": [
+                  {
+                    "primary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.Chart#alpChart1"
+                      }
+                    ],
+                    "secondary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.LineItem"
+                      }
+                    ],
+                    "defaultPath": "both"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "GamesObjectPage": {
+          "type": "Component",
+          "id": "GamesObjectPage",
+          "name": "sap.fe.templates.ObjectPage",
+          "options": {
+            "settings": {
+              "editableHeaderContent": false,
+              "contextPath": "/Games",
+              "controlConfiguration": {
+                "Teams/@com.sap.vocabularies.UI.v1.LineItem#Equipes": {
+                  "tableSettings": {
+                    "enableExport": false,
+                    "disableCopyToClipboard": true,
+                    "enableFullScreen": false,
+                    "selectionMode": "None",
+                    "enablePaste": false
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "transactional"
+  }
+}

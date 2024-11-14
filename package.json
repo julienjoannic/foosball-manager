@@ -1,0 +1,52 @@
+{
+  "name": "foosball-manager",
+  "version": "1.0.0",
+  "description": "A simple CAP project.",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap/cds": "^7",
+    "express": "^4"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/ux-specification": "^1.124.1",
+    "cds-launchpad-plugin": "^2.2.0"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-admin-players": "cds watch --open admin-players/webapp/index.html?sap-ui-xx-viewCache=false",
+    "watch-admin-tables": "cds watch --open admin-tables/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "cds": {
+    "requires": {
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "joannijl": {
+            "password": "Monmdp@36",
+            "roles": [
+              "Admin",
+              "Player"
+            ]
+          },
+          "doyenal": {
+            "password": "doyenal",
+            "roles": [
+              "Player"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "sapux": [
+    "app/admin-players",
+    "app/admin-tables",
+    "app/admin-seasons",
+    "app/user-games",
+    "app/analytics-player",
+    "app/analytics-overview"
+  ]
+}

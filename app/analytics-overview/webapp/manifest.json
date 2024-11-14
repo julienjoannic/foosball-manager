@@ -1,0 +1,153 @@
+{
+  "_version": "1.59.0",
+  "sap.app": {
+    "id": "sig.cap.foosball.app.analyticsoverview",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap/generator-fiori:ovp",
+      "version": "1.13.1",
+      "toolsId": "685fdbaa-161c-4948-8c41-586584dad0ca"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/odata/v4/analytics/",
+        "type": "OData",
+        "settings": {
+          "annotations": [],
+          "odataVersion": "4.0"
+        }
+      }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "AnalyticsOverview-display": {
+          "semanticObject": "AnalyticsOverview",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "icon": "sap-icon://customer-view",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.128.1",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.fe.templates": {},
+        "sap.ovp": {},
+        "sap.ui.rta": {},
+        "sap.ui.layout": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "sig.cap.foosball.app.analyticsoverview.i18n.i18n"
+        }
+      },
+      "mainModel": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "synchronizationMode": "None",
+          "operationMode": "Server",
+          "autoExpandSelect": true,
+          "earlyRequests": true
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [],
+      "targets": {}
+    },
+    "extends": {
+      "extensions": {
+        "sap.ui.controllerExtensions": {
+          "sap.ovp.app.Main": {
+            "controllerName": "sig.cap.foosball.app.analyticsoverview.ext.custom"
+          }
+        }
+      }
+    }
+  },
+  "sap.ovp": {
+    "globalFilterModel": "mainModel",
+    "globalFilterEntityType": "PlayerStatistics",
+    "containerLayout": "resizable",
+    "enableLiveFilter": true,
+    "considerAnalyticalParameters": true,
+    "cards": {
+      "winrateChartCard": {
+        "model": "mainModel",
+        "template": "sap.ovp.cards.v4.charts.analytical",
+        "settings": {
+          "title": "{{Victoire}}",
+          "entitySet": "PlayerStatistics",
+          "chartAnnotationPath": "com.sap.vocabularies.UI.v1.Chart#ovwChartWinRate",
+          "dataPointAnnotationPath": "com.sap.vocabularies.UI.v1.DataPoint#ovwDatapointWinRate"
+        }
+      },
+      "ovwGamesTable": {
+        "template": "sap.ovp.cards.v4.table",
+        "model": "mainModel",
+        "settings": {
+          "entitySet": "Games",
+          "title": "{{Derniers matchs}}",
+          "sortBy": "PlayedAt",
+          "sortOrder": "descending",
+          "annotationPath": "com.sap.vocabularies.UI.v1.LineItem#ovwGamesTable"
+        }
+      }
+    },
+    "globalFilterControlType": "MacroFilterBar",
+    "chartSettings": {}
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "analytical"
+  }
+}
