@@ -17,6 +17,7 @@ service AnalyticsService @(requires: 'Player') {
         ]
     }
     entity Games as projection on db.Games {
+        key ID,
         PlayedAt,
         Table,
         Season,
@@ -55,8 +56,8 @@ service AnalyticsService @(requires: 'Player') {
         ]
     }
     entity PlayerStatistics as SELECT from db.GameTeams {
-        Player.Name as PlayerName,
-        Game.Season,
+        key Player.Name as PlayerName,
+        key Game.Season,
         Game.Season.Description as SeasonDescription,
         count(*) as GamesPlayed:Integer,
         sum(case Won when true then 1 else 0 end) as GamesWon:Integer,
@@ -66,7 +67,7 @@ service AnalyticsService @(requires: 'Player') {
         round((sum(Gamelles) * 1.0)/count(*), 2) as GamellesPerGame:Decimal(2,2),
         sum(Thomatines) as Thomatines:Integer,
         round((sum(Thomatines) * 1.0)/count(*), 2) as ThomatinesPerGame:Decimal(2,2)
-    } GROUP BY Player, Game.Season;
+    } GROUP BY Player.Name, Game.Season, Game.Season.Number, Game.Season.DateFrom, Game.Season.DateTo;
 
     function GetConnectedPlayer() returns Players;
     function GetCurrentSeason() returns Seasons;

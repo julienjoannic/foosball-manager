@@ -22,6 +22,7 @@ sap.ui.define([
                 var oContext = oFunction.getBoundContext();
                 var object = oContext.getObject();
 
+                console.log(object);
                 if (object) {
                     oGlobalFilter.setFilterValues("PlayerName", "EQ", object.Name);
                 }
@@ -32,6 +33,7 @@ sap.ui.define([
                 oContext = oFunction.getBoundContext();
                 object = oContext.getObject();
 
+                console.log(object);
                 if (object) {
                     oGlobalFilter.setFilterValues("SeasonDescription", "EQ", object.Description);
                 }

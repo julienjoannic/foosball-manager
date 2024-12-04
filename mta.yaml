@@ -1,0 +1,336 @@
+_schema-version: 3.3.0
+ID: foosball-manager
+description: SIG Foosball Manager application
+version: 1.0.0
+modules:
+- name: foosball-manager-srv
+  type: nodejs
+  path: gen/srv
+  requires:
+  - name: foosball-manager-db
+  - name: foosball-manager-auth
+  - name: foosball-manager-destination-service
+  provides:
+  - name: srv-api
+    properties:
+      srv-url: ${default-url}
+  parameters:
+    buildpack: nodejs_buildpack
+    readiness-health-check-http-endpoint: /health
+    readiness-health-check-type: http
+  build-parameters:
+    builder: npm
+- name: foosball-manager-db-deployer
+  type: hdb
+  path: gen/db
+  requires:
+  - name: foosball-manager-db
+  parameters:
+    buildpack: nodejs_buildpack
+- name: foosball-manager-dst-content
+  type: com.sap.application.content
+  requires:
+  - name: foosball-manager-destination-service
+    parameters:
+      content-target: true
+  - name: foosball-manager_html_repo_host
+    parameters:
+      service-key:
+        name: foosball-manager_html_repo_host-key
+  - name: foosball-manager-auth
+    parameters:
+      service-key:
+        name: foosball-manager-auth-key
+  - name: srv-api
+  parameters:
+    content:
+      instance:
+        destinations:
+        - Name: foosman_html_repo_host
+          ServiceInstanceName: foosball-manager-html5-app-host-service
+          ServiceKeyName: foosball-manager_html_repo_host-key
+          sap.cloud.service: foosball-manager
+        - Authentication: OAuth2UserTokenExchange
+          Name: foosman_auth
+          ServiceInstanceName: foosball-manager-auth
+          ServiceKeyName: foosball-manager-auth-key
+          sap.cloud.service: foosball-manager
+        - Authentication: OAuth2UserTokenExchange
+          Name: foosball-manager-app-srv
+          TokenServiceInstanceName: foosball-manager-auth
+          TokenServiceKeyName: foosball-manager-auth-key
+          URL: '~{srv-api/srv-url}'
+          sap.cloud.service: foosball-manager
+        existing_destinations_policy: update
+  build-parameters:
+    no-source: true
+- name: foosball-manager
+  type: approuter.nodejs
+  path: app/router
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+  - name: foosball-manager-auth
+  - name: foosball-manager-destination-service
+  - name: foosball-manager-html5-runtime
+  parameters:
+    disk-quota: 1024M
+    keep-existing-routes: true
+    memory: 1024M
+- name: foosball-manager-app-deployer
+  type: com.sap.application.content
+  path: gen
+  requires:
+  - name: foosball-manager_html_repo_host
+  build-parameters:
+    build-result: app/
+    requires:
+    - artifacts:
+      - admin-players.zip
+      name: foosballmanageradminplayers
+      target-path: app/
+    - artifacts:
+      - admin-seasons.zip
+      name: foosballmanageradminseasons
+      target-path: app/
+    - artifacts:
+      - admin-tables.zip
+      name: foosballmanageradmintables
+      target-path: app/
+    - artifacts:
+      - analytics-overview.zip
+      name: foosballmanageranalyticsoverview
+      target-path: app/
+    - artifacts:
+      - analytics-player.zip
+      name: foosballmanageranalyticsplayer
+      target-path: app/
+    - artifacts:
+      - user-games.zip
+      name: foosballmanagerusergames
+      target-path: app/
+- name: foosballmanageradminplayers
+  type: html5
+  path: app/admin-players
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosballmanageradminseasons
+  type: html5
+  path: app/admin-seasons
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosballmanageradmintables
+  type: html5
+  path: app/admin-tables
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosballmanageranalyticsoverview
+  type: html5
+  path: app/analytics-overview
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosballmanageranalyticsplayer
+  type: html5
+  path: app/analytics-player
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosballmanagerusergames
+  type: html5
+  path: app/user-games
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm ci
+    - npm run build
+    supported-platforms: []
+- name: foosball-manager-app-content
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: foosball-manager_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - sigcapfoosballappadminplayers.zip
+      name: sigcapfoosballappadminplayers
+      target-path: resources/
+    - artifacts:
+      - sigcapfoosballappadminseasons.zip
+      name: sigcapfoosballappadminseasons
+      target-path: resources/
+    - artifacts:
+      - sigcapfoosballappadmintables.zip
+      name: sigcapfoosballappadmintables
+      target-path: resources/
+    - artifacts:
+      - sigcapfoosballappanalyticsoverview.zip
+      name: sigcapfoosballappanalyticsoverview
+      target-path: resources/
+    - artifacts:
+      - sigcapfoosballappanalyticsplayer.zip
+      name: sigcapfoosballappanalyticsplayer
+      target-path: resources/
+    - artifacts:
+      - sigcapfoosballappusergames.zip
+      name: sigcapfoosballappusergames
+      target-path: resources/
+- name: sigcapfoosballappadminplayers
+  type: html5
+  path: app/admin-players
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: sigcapfoosballappadminseasons
+  type: html5
+  path: app/admin-seasons
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: sigcapfoosballappadmintables
+  type: html5
+  path: app/admin-tables
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: sigcapfoosballappanalyticsoverview
+  type: html5
+  path: app/analytics-overview
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: sigcapfoosballappanalyticsplayer
+  type: html5
+  path: app/analytics-player
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+- name: sigcapfoosballappusergames
+  type: html5
+  path: app/user-games
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: foosball-manager-db
+  type: com.sap.xs.hdi-container
+  parameters:
+    service: hana
+    service-plan: hdi-shared
+- name: foosball-manager-auth
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: foosball-manager-${org}-${space}
+    path: ./xs-security.json
+    service: xsuaa
+    service-plan: application
+- name: foosball-manager-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: true
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            HTML5.DynamicDestination: true
+            HTML5.ForwardAuthToken: true
+            Name: foosball-manager-srv-api
+            ProxyType: Internet
+            Type: HTTP
+            URL: ~{srv-api/srv-url}
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: foosball-manager-destination-service
+    service-plan: lite
+  requires:
+  - name: srv-api
+    group: destinations
+    properties:
+      forwardAuthToken: true
+      name: srv-api
+      url: ~{srv-url}
+- name: foosball-manager_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-name: foosball-manager-html5-app-host-service
+    service-plan: app-host
+- name: foosball-manager-html5-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+  - builder: custom
+    commands:
+    - npm ci
+    - npx cds build --production

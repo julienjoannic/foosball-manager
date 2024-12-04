@@ -38,8 +38,16 @@
           },
           "indicatorDataSource": {
             "dataSource": "mainService",
-            "path": "/Players/$count",
+            "path": "Players/$count",
             "refresh": 0
+          }
+        },
+        "user-games-display": {
+          "semanticObject": "usergames",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
           }
         }
       }
@@ -152,5 +160,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "foosball-manager"
   }
 }

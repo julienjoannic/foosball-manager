@@ -41,6 +41,14 @@
             "path": "Games/$count",
             "refresh": 5
           }
+        },
+        "user-games-display": {
+          "semanticObject": "usergames",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
@@ -180,5 +188,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "transactional"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "foosball-manager"
   }
 }

@@ -47,7 +47,7 @@ entity Games : cuid, managed {
 
     Table: Association to Tables;
     Season: Association to Seasons;
-    PlayedAt: DateTime;
+    PlayedAt: Timestamp;
     WinningTeamColor: String;
 
     Teams: Composition of many GameTeams on Teams.Game = $self;

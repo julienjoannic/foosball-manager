@@ -13,6 +13,8 @@ module.exports = class UserService extends cds.ApplicationService {
                 Teams: []
             };
 
+            console.log(defaults.PlayedAt);
+
             var userPlayer = await SELECT.one.from(Players, p => {
                 p.ID, p.DefaultTable_ID
             }).where({ Username: req.user.id });

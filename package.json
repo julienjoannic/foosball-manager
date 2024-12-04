@@ -1,44 +1,49 @@
 {
   "name": "foosball-manager",
   "version": "1.0.0",
-  "description": "A simple CAP project.",
+  "description": "Gestion des matchs de baby-foot aux SIG.",
   "repository": "<Add your repository here>",
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@sap/cds": "^7",
+    "@cap-js/hana": "^1",
+    "@sap-cloud-sdk/odata-v4": "^3.24.0",
+    "@sap/cds": "^8.5.0",
+    "@sap/xssec": "^4",
     "express": "^4"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^8",
     "@sap/ux-specification": "^1.124.1",
-    "cds-launchpad-plugin": "^2.2.0"
+    "cds-launchpad-plugin": "^2.2.0",
+    "rimraf": "^5.0.5"
   },
   "scripts": {
     "start": "cds-serve",
     "watch-admin-players": "cds watch --open admin-players/webapp/index.html?sap-ui-xx-viewCache=false",
-    "watch-admin-tables": "cds watch --open admin-tables/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-admin-tables": "cds watch --open admin-tables/webapp/index.html?sap-ui-xx-viewCache=false",
+    "undeploy": "cf undeploy foosball-manager --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1"
   },
   "cds": {
     "requires": {
       "auth": {
-        "kind": "mocked",
-        "users": {
-          "joannijl": {
-            "password": "Monmdp@36",
-            "roles": [
-              "Admin",
-              "Player"
-            ]
-          },
-          "doyenal": {
-            "password": "doyenal",
-            "roles": [
-              "Player"
-            ]
-          }
-        }
-      }
+        "kind": "xsuaa"
+      },
+      "[production]": {
+        "auth": {
+          "kind": "xsuaa"
+        },
+        "db": "hana"
+      },
+      "destinations": true,
+      "html5-repo": true,
+      "workzone": true
+    },
+    "sql": {
+      "native_hana_associations": false
     }
   },
   "sapux": [

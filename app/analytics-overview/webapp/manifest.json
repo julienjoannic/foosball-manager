@@ -36,6 +36,14 @@
             "parameters": {},
             "additionalParameters": "allowed"
           }
+        },
+        "user-games-display": {
+          "semanticObject": "usergames",
+          "action": "display",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
@@ -149,5 +157,9 @@
   "sap.fiori": {
     "registrationIds": [],
     "archeType": "analytical"
+  },
+  "sap.cloud": {
+    "public": true,
+    "service": "foosball-manager"
   }
 }

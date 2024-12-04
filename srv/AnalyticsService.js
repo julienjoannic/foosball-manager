@@ -6,6 +6,7 @@ module.exports = class AnalyticsService extends cds.ApplicationService {
         const { Tables, Games, Players, Seasons } = this.entities;
 
         this.on('GetConnectedPlayer', async (req) => {
+
             var player = await SELECT.one.from(Players).where({ Username: req.user.id });
             if (player) {
                 return player;
